@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAMZA PREDATOR</title>
+    <style>
+        body { background: #000; color: #0f0; text-align: center; font-family: sans-serif; }
+        .rocket { font-size: 100px; margin-top: 50px; animation: fly 1s infinite alternate; }
+        @keyframes fly { from { transform: translateY(0); } to { transform: translateY(-20px); } }
+        #res { font-size: 50px; color: yellow; margin: 20px; }
+        .btn { background: #238636; color: white; padding: 20px; border-radius: 10px; border: none; width: 80%; font-size: 20px; }
+    </style>
+</head>
+<body>
+    <div class="rocket">🚀</div>
+    <h1>HAMZA-FF RADAR</h1>
+    <div id="res">0.00x</div>
+    <button class="btn" onclick="scan()">إبدأ القنص</button>
+    <script>
+        function scan() {
+            document.getElementById('res').innerText = "SCANNING...";
+            setTimeout(() => {
+                let v = (Math.random() * 3 + 1.1).toFixed(2);
+                document.getElementById('res').innerText = v + "x 🔥";
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
+
