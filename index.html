@@ -2,44 +2,40 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMZA REAL-TIME RADAR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>HAMZA RADAR V9</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { background: #000; color: #0f0; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
-        .rocket { font-size: 80px; margin-top: 30px; transition: 0.5s; }
-        #res { font-size: 60px; color: #ffeb3b; text-shadow: 0 0 20px rgba(255,235,59,0.5); margin: 20px; }
-        .status { color: #aaa; font-size: 14px; margin-bottom: 20px; }
-        .btn { background: linear-gradient(45deg, #1d72b8, #238636); color: white; padding: 15px 40px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        body { background: radial-gradient(circle, #0a0a0a, #000); color: white; text-align: center; font-family: 'Arial', sans-serif; height: 100vh; margin: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .rocket-container { font-size: 80px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        #res { font-size: 65px; font-weight: bold; color: #00ff00; text-shadow: 0 0 20px #00ff00; margin: 10px 0; }
+        .box { border: 2px solid #333; padding: 20px; border-radius: 20px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); width: 80%; }
+        .brand { color: #555; letter-spacing: 3px; font-size: 12px; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="rocket" id="rocket">🚀</div>
-    <h2 style="color: #00ff00;">HAMZA-FF REAL ANALYSIS</h2>
-    <div id="res">READY</div>
-    <div class="status" id="status">متصل بالسيرفر: آمن ✅</div>
-    <button class="btn" onclick="requestAnalysis()">تحليل الإشارة الحالية</button>
+    <div class="rocket-container">🚀</div>
+    <div class="box">
+        <div style="color: #aaa;">CURRENT PREDICTION</div>
+        <div id="res">LOADING...</div>
+        <div style="font-size: 14px; color: #00ff00;">● LIVE CONNECTION ACTIVE</div>
+    </div>
+    <div class="brand">BY HAMZA AMKOM</div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // توسيع النافذة لتملأ الشاشة
-
-        function requestAnalysis() {
-            document.getElementById('res').innerText = "ANALYZING...";
-            document.getElementById('rocket').style.transform = "translateY(-20px) scale(1.1)";
-            
-            // محاكاة الاتصال بالسكربت الخلفي (Backend)
-            setTimeout(() => {
-                // هنا نضع منطق التحليل الحقيقي الذي تريده
-                let result = (Math.random() * 2.5 + 1.1).toFixed(2);
-                document.getElementById('res').innerText = result + "x 🔥";
-                document.getElementById('rocket').style.transform = "translateY(0) scale(1)";
-                
-                // إرسال البيانات للسكربت في تلجرام (اختياري)
-                tg.sendData(JSON.stringify({v: result, user: "Hamza"}));
-            }, 1200);
+        tg.expand();
+        
+        // قراءة الرقم المحقون في الرابط
+        const params = new URLSearchParams(window.location.search);
+        const signal = params.get('val');
+        
+        if (signal) {
+            document.getElementById('res').innerText = signal + "x";
+        } else {
+            document.getElementById('res').innerText = "1.00x";
         }
     </script>
 </body>
 </html>
-
