@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMZA RADAR</title>
+    <title>DARK INJECTION V12</title>
     <style>
         body { background:#000; color:#ff0000; font-family:monospace; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
         .box { border:2px solid #ff0000; border-radius:20px; padding:30px; text-align:center; width:280px; box-shadow:0 0 20px #ff0000; }
-        .circle { width:140px; height:140px; border:3px solid #ff0000; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:20px auto; box-shadow:inset 0 0 15px #ff0000; }
-        #prediction { font-size:45px; font-weight:bold; }
-        .btn { background:#ff0000; color:#000; border:none; padding:12px; border-radius:20px; font-weight:bold; cursor:pointer; width:100%; }
+        .circle { width:140px; height:140px; border:3px solid #ff0000; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:20px auto; box-shadow:inset 0 0 15px #ff0000, 0 0 15px #ff0000; }
+        #prediction { font-size:45px; font-weight:bold; text-shadow: 0 0 10px #ff0000; }
+        .btn { background:#ff0000; color:#000; border:none; padding:12px; border-radius:20px; font-weight:bold; cursor:pointer; width:100%; box-shadow: 0 0 10px #ff0000; }
     </style>
 </head>
 <body>
@@ -17,27 +17,32 @@
         <div style="font-size:40px;">💀</div>
         <div class="circle"><div id="prediction">--x</div></div>
         <button class="btn" onclick="start()">ACTIVATE RADAR</button>
-        <div id="st" style="font-size:10px; margin-top:10px;">READY</div>
+        <div id="st" style="font-size:10px; margin-top:10px; color:#555;">SYSTEM READY</div>
     </div>
     <script>
-        // الرابط المباشر الصحيح لملفك
-        const dataUrl = 'https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json';
+        // تغيير: نطلب الملف من نفس المجلد لضمان السرعة وتخطي قيود GitHub Raw
+        const dataFile = 'data.json';
 
         async function update() {
             try {
-                // إضافة t=Date.now تكسر الذاكرة المؤقتة وتظهر الرقم الجديد فوراً
-                const r = await fetch(`${dataUrl}?t=${Date.now()}`);
+                // إضافة متغير الوقت لمنع الكاش نهائياً
+                const r = await fetch(dataFile + '?t=' + Date.now());
+                if (!r.ok) throw new Error();
                 const d = await r.json();
                 if(d.signal) {
                     document.getElementById('prediction').innerText = d.signal + "x";
-                    document.getElementById('st').innerText = "LIVE SIGNAL RECEIVED ✅";
+                    document.getElementById('st').innerText = "LIVE: SIGNAL INJECTED";
+                    document.getElementById('st').style.color = "#00ff00"; // تغيير اللون للأخضر عند النجاح
                 }
-            } catch(e) { document.getElementById('st').innerText = "WAITING FOR DATA..."; }
+            } catch(e) {
+                document.getElementById('st').innerText = "SEARCHING FOR SIGNAL...";
+                document.getElementById('st').style.color = "#ff0000";
+            }
         }
 
         function start() {
-            document.getElementById('st').innerText = "CONNECTING...";
-            setInterval(update, 2000); // تحديث كل ثانيتين
+            document.getElementById('st').innerText = "CONNECTING TO ENGINE...";
+            setInterval(update, 2000); 
             update();
         }
     </script>
