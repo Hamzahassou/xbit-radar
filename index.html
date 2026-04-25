@@ -5,107 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HAMZA 1X-RADAR LIVE</title>
     <style>
-        body { 
-            background: radial-gradient(circle, #050505, #000); 
-            color: white; 
-            text-align: center; 
-            font-family: 'Arial', sans-serif; 
-            height: 100vh; 
-            margin: 0; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            overflow: hidden;
-        }
-        .rocket-box { 
-            font-size: 80px; 
-            animation: fly 2s infinite ease-in-out; 
-        }
-        @keyframes fly { 
-            0%, 100% { transform: translateY(0); } 
-            50% { transform: translateY(-20px); } 
-        }
-        #res { 
-            font-size: 75px; 
-            font-weight: bold; 
-            color: #00ff00; 
-            text-shadow: 0 0 30px #00ff00; 
-            margin: 20px 0;
-        }
-        .info { 
-            border: 1px solid #333; 
-            padding: 20px; 
-            border-radius: 20px; 
-            background: rgba(255,255,255,0.05); 
-            width: 85%; 
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .status-text { 
-            font-size: 12px; 
-            color: #888; 
-            letter-spacing: 1px;
-        }
-        .status-dot { 
-            height: 10px; 
-            width: 10px; 
-            background-color: #00ff00; 
-            border-radius: 50%; 
-            display: inline-block; 
-            margin-right: 5px;
-            animation: blink 1s infinite; 
-        }
-        @keyframes blink { 
-            0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } 
-        }
-        .footer {
-            margin-top: 20px;
-            font-size: 10px;
-            color: #444;
-        }
+        body { background: #000; color: #fff; text-align: center; font-family: Arial; display: flex; flex-direction: column; justify-content: center; height: 100vh; margin: 0; }
+        .rocket { font-size: 80px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        #res { font-size: 70px; font-weight: bold; color: #0f0; text-shadow: 0 0 20px #0f0; }
+        .box { border: 1px solid #333; padding: 20px; border-radius: 15px; background: #111; width: 80%; margin: auto; }
+        .dot { height: 10px; width: 10px; background: #0f0; border-radius: 50%; display: inline-block; animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
     </style>
 </head>
 <body>
-
-    <div class="rocket-box">🚀</div>
-
-    <div class="info">
-        <div class="status-text">1XBET CRASH PREDICTION</div>
+    <div class="rocket">🚀</div>
+    <div class="box">
+        <div style="color: #888; font-size: 14px;">1XBET CRASH PREDICTION</div>
         <div id="res">--x</div>
-        <div style="font-size: 13px; color: #00ff00;">
-            <span class="status-dot"></span> LIVE ANALYSIS ACTIVE
-        </div>
+        <div style="font-size: 12px; color: #0f0;"><span class="dot"></span> LIVE ANALYSIS ACTIVE</div>
     </div>
-
-    <div class="footer">BY HAMZA AMKOM</div>
-
     <script>
-        // رابط ملف البيانات الخاص بك على GitHub
-        // أضفنا 't=' لمنع المتصفح من عرض بيانات قديمة (Cache)
-        const dataUrl = 'https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json';
+        // الرابط المباشر (RAW) لملف البيانات الخاص بك
+        const url = 'https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json';
 
-        async function fetchSignal() {
+        async function update() {
             try {
-                const response = await fetch(dataUrl + '?t=' + new Date().getTime());
-                if (!response.ok) throw new Error('Network error');
-                
-                const data = await response.json();
-                
-                // تحديث الرقم في الواجهة
-                if (data.signal) {
-                    document.getElementById('res').innerText = data.signal + "x";
+                // إضافة رقم عشوائي في نهاية الرابط لمنع الكاش (Cache)
+                const r = await fetch(url + '?nocache=' + Math.random());
+                const d = await r.json();
+                if(d.signal) {
+                    document.getElementById('res').innerText = d.signal + 'x';
                 }
-            } catch (e) {
-                console.log("جاري البحث عن إشارة جديدة...");
-            }
+            } catch (e) { console.log("جاري البحث..."); }
         }
-
-        // تحديث البيانات تلقائياً كل 3 ثوانٍ
-        setInterval(fetchSignal, 3000);
-        
-        // تشغيل الجلب لأول مرة عند فتح الصفحة
-        fetchSignal();
+        setInterval(update, 2000); // تحديث كل ثانيتين
+        update();
     </script>
 </body>
 </html>
