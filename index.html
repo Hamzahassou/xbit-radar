@@ -2,41 +2,41 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMZA 1X-RADAR LIVE</title>
+    <title>1XBET LIVE RADAR</title>
     <style>
-        body { background: #000; color: #fff; text-align: center; font-family: Arial; display: flex; flex-direction: column; justify-content: center; height: 100vh; margin: 0; }
-        .rocket { font-size: 80px; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        #res { font-size: 70px; font-weight: bold; color: #0f0; text-shadow: 0 0 20px #0f0; }
-        .box { border: 1px solid #333; padding: 20px; border-radius: 15px; background: #111; width: 80%; margin: auto; }
-        .dot { height: 10px; width: 10px; background: #0f0; border-radius: 50%; display: inline-block; animation: blink 1s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        body { background-color: #000; color: #fff; text-align: center; font-family: Arial; }
+        .rocket { font-size: 80px; margin-top: 50px; }
+        .box { border: 1px solid #333; padding: 20px; border-radius: 15px; display: inline-block; margin-top: 20px; background: #111; }
+        #prediction { color: #0f0; font-size: 48px; font-weight: bold; text-shadow: 0 0 10px #0f0; }
+        .status { color: #888; font-size: 14px; margin-top: 10px; }
     </style>
 </head>
 <body>
     <div class="rocket">🚀</div>
     <div class="box">
-        <div style="color: #888; font-size: 14px;">1XBET CRASH PREDICTION</div>
-        <div id="res">--x</div>
-        <div style="font-size: 12px; color: #0f0;"><span class="dot"></span> LIVE ANALYSIS ACTIVE</div>
+        <p>1XBET CRASH PREDICTION</p>
+        <div id="prediction">--X</div>
+        <div class="status">● LIVE ANALYSIS ACTIVE</div>
     </div>
-    <script>
-        // الرابط المباشر (RAW) لملف البيانات الخاص بك
-        const url = 'https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json';
 
-        async function update() {
+    <script>
+        async function fetchSignal() {
             try {
-                // إضافة رقم عشوائي في نهاية الرابط لمنع الكاش (Cache)
-                const r = await fetch(url + '?nocache=' + Math.random());
-                const d = await r.json();
-                if(d.signal) {
-                    document.getElementById('res').innerText = d.signal + 'x';
-                }
-            } catch (e) { console.log("جاري البحث..."); }
+                // استبدل الرابط برابط ملف data.json الخاص بك على GitHub
+                const url = "https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json";
+                const response = await fetch(url + "?t=" + new Date().getTime());
+                const data = await response.json();
+                
+                // تحديث الرقم في الواجهة
+                document.getElementById('prediction').innerText = data.signal + "X";
+            } catch (e) {
+                console.log("جاري الانتظار...");
+            }
         }
-        setInterval(update, 2000); // تحديث كل ثانيتين
-        update();
+
+        // تحديث البيانات كل 5 ثوانٍ
+        setInterval(fetchSignal, 5000);
+        fetchSignal();
     </script>
 </body>
 </html>
