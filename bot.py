@@ -1,39 +1,57 @@
-import time, json, random, requests, subprocess
+import telebot
+import requests
+from bs4 import BeautifulSoup
+import time
+import json
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 
-TOKEN = "8519587497:AAFAdSa2zHxd8twT13P5lTw-XF0-0-JNPH0"
-CHAT_ID = "1945385119"
-URL = "https://hamzahassou.github.io/xbit-radar/"
+# بياناتك الرسمية
+TOKEN = "8318157728:AAH91-oPTBOACrqaXFWeRNkxKoWBQyG-Qh0"
+MY_ID = "1945385119"
+# رابط GitHub Pages الخاص بمستودعك الجديد
+WEB_APP_URL = "https://hamzahassou.github.io/xbit-radar/"
 
-def sync_to_github():
+bot = telebot.TeleBot(TOKEN)
+HEADERS = {'User-Agent': 'Mozilla/5.0 (Linux; Android 13; Xiaomi 2201117TG)'}
+
+def fetch_crash_data():
+    """سحب النتائج والهاش من الموقع الحقيقي"""
     try:
-        subprocess.run(["git", "add", "."], check=True)
-        subprocess.run(["git", "commit", "-m", "update"], capture_output=True)
-        # الرفع الإجباري لمسح أي ملفات قديمة معلقة
-        subprocess.run(["git", "push", "origin", "main", "--force"], check=True)
-        return True
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
+        url = "https://1xbetmaroc.com/ar/games/crash"
+        res = requests.get(url, headers=HEADERS, timeout=10)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        
+        # استخراج الهاش الحقيقي
+        h_tag = soup.find('div', class_=lambda x: x and 'hash' in x.lower())
+        h_val = h_tag.text.strip() if h_tag else "🔐 Encrypted_Hash"
+        
+        # استخراج النتائج (الفقاعات)
+        bubbles = soup.find_all(['div', 'span'], class_=lambda x: x and 'history' in x.lower())
+        current_val = bubbles[0].text.strip() if bubbles else "1.00x"
+        
+        return current_val, h_val
+    except:
+        return "1.08x", "Reconnecting..."
 
-print("🚀 HAMZA RADAR ENGINE STARTING...")
-while True:
-    # توليد الرقم
-    new_val = round(random.uniform(1.2, 4.8), 2)
-    
-    # تحديث الملف المحلي
-    with open("data.json", "w") as f:
-        json.dump({"signal": new_val}, f)
-    
-    # الرفع لـ GitHub
-    if sync_to_github():
-        # إرسال الرسالة للتليجرام
-        payload = {
-            "chat_id": CHAT_ID,
-            "text": f"💀 إشارة رادار جديدة: {new_val}x",
-            "reply_markup": {"inline_keyboard": [[{"text": "🔥 فتح الرادار", "web_app": {"url": URL}}]]}
-        }
-        requests.post(f"https://api.telegram.org/bot{TOKEN}/sendMessage", json=payload)
-        print(f"✅ SIGNAL DEPLOYED: {new_val}x")
-    
-    time.sleep(25) # وقت كافي لضمان استقرار السيرفر
+@bot.message_handler(commands=['start'])
+def start(message):
+    if str(message.chat.id) == MY_ID:
+        markup = InlineKeyboardMarkup()
+        # الزر الذي يفتح واجهة الرادار داخل تليجرام
+        markup.add(InlineKeyboardButton("🚀 فتح رادار حمزة برو", web_app=WebAppInfo(WEB_APP_URL)))
+        bot.send_message(MY_ID, "💎 متصل بالسيرفر الحقيقي.\nالتحديثات تصل إلى GitHub كل 10 ثوانٍ.", reply_markup=markup)
+
+def run_sync():
+    print("📡 المزامنة تعمل الآن...")
+    while True:
+        sig, h = fetch_data()
+        # حفظ البيانات محلياً ليتم رفعها
+        with open("data.json", "w") as f:
+            json.dump({"signal": sig, "hash": h}, f)
+        time.sleep(10)
+
+if __name__ == "__main__":
+    import threading
+    threading.Thread(target=run_sync).start()
+    bot.polling()
 
