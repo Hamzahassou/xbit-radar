@@ -3,112 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMZA AMKOM - 1X-RADAR LIVE</title>
+    <title>HAMZA RADAR LIVE</title>
     <style>
-        body { 
-            background: radial-gradient(circle, #0a0a0a, #000); 
-            color: white; 
-            font-family: 'Arial', sans-serif; 
-            text-align: center; 
-            height: 100vh; 
-            margin: 0; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            overflow: hidden;
-        }
-        
-        /* تأثيرات الصاروخ الاحترافية */
-        .rocket-container {
-            font-size: 100px;
-            margin-bottom: -15px;
-            filter: drop-shadow(0 0 10px #2ecc71);
-            animation: fly-in 1.5s ease-out, thrust 0.5s infinite linear;
-        }
-        
-        @keyframes fly-in {
-            0% { transform: translateY(200px) scale(0.5); opacity: 0; }
-            100% { transform: translateY(0) scale(1); opacity: 1; }
-        }
-        
-        @keyframes thrust {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-5px) scale(1.02); }
-        }
-
-        /* صندوق البيانات الاحترافي (Neon) */
-        .card {
-            border: 2px solid #2ecc71;
-            padding: 30px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            width: 80%;
-            max-width: 400px;
-            box-shadow: 0 10px 40px rgba(46, 204, 113, 0.3), inset 0 0 15px rgba(46, 204, 113, 0.1);
-            backdrop-filter: blur(10px);
-            animation: neon-glow 2s infinite alternate;
-        }
-        
-        @keyframes neon-glow {
-            from { box-shadow: 0 10px 40px rgba(46, 204, 113, 0.3); }
-            to { box-shadow: 0 10px 60px rgba(46, 204, 113, 0.5); }
-        }
-
-        h2 { color: #888; font-size: 16px; letter-spacing: 1.5px; margin: 0 0 15px 0; }
-        
-        #prediction { 
-            font-size: 80px; 
-            font-weight: bold; 
-            color: #2ecc71; 
-            text-shadow: 0 0 30px #2ecc71, 0 0 50px #2ecc71; 
-            margin: 10px 0;
-        }
-
-        .status { font-size: 13px; color: #00ff00; letter-spacing: 1px; }
-        .status-dot { height: 10px; width: 10px; background-color: #00ff00; border-radius: 50%; display: inline-block; margin-right: 5px; animation: blink 1s infinite; }
-        
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
-        
-        .footer { margin-top: 20px; font-size: 11px; color: #333; }
+        body { background: #0a0a0a; color: white; font-family: sans-serif; text-align: center; height: 100vh; margin: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .rocket { font-size: 60px; animation: move 1s infinite alternate; }
+        @keyframes move { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+        .card { border: 2px solid #2ecc71; padding: 30px; border-radius: 20px; background: rgba(255,255,255,0.05); box-shadow: 0 0 20px #2ecc71; width: 80%; max-width: 400px; }
+        #prediction { font-size: 80px; font-weight: bold; color: #2ecc71; margin: 10px 0; }
+        .status { color: #00ff00; font-size: 13px; }
+        .dot { height: 10px; width: 10px; background: #0f0; border-radius: 50%; display: inline-block; animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
-
-    <div class="rocket-container">🚀</div>
-    
+    <div class="rocket">🚀</div>
     <div class="card">
-        <h2>1XBET CRASH PREDICTION</h2>
+        <h2 style="color:#888; font-size:16px;">1XBET CRASH PREDICTION</h2>
         <div id="prediction">--x</div>
-        <div class="status">
-            <span class="status-dot"></span> LIVE ANALYSIS ACTIVE
-        </div>
+        <div class="status"><span class="dot"></span> LIVE ANALYSIS ACTIVE</div>
     </div>
-
-    <div class="footer">DEVELOPED BY HAMZA AMKOM</div>
-
     <script>
-        // رابط ملف data.json المرفوع على GitHub (تأكد من صحة الرابط)
-        const url = "https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json";
-
-        async function updateRadar() {
+        const dataUrl = "https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json";
+        async function fetchSignal() {
             try {
-                // إضافة متغير عشوائي في نهاية الرابط لمنع تخزين النتيجة القديمة (Cache)
-                const response = await fetch(url + '?t=' + new Date().getTime());
-                const data = await response.json();
-                
-                // تحديث الرقم في الواجهة
-                if(data.signal) {
-                    document.getElementById('prediction').innerText = data.signal + "x";
-                }
-            } catch (e) {
-                console.log("جاري البحث عن إشارة...");
-            }
+                const r = await fetch(dataUrl + "?t=" + Date.now());
+                const d = await r.json();
+                if(d.signal) document.getElementById('prediction').innerText = d.signal + "x";
+            } catch (e) { console.log("Error fetching data"); }
         }
-
-        // تحديث البيانات تلقائياً كل 4 ثوانٍ
-        setInterval(updateRadar, 4000);
-        updateRadar(); // تشغيل أولي
+        setInterval(fetchSignal, 5000);
+        fetchSignal();
     </script>
 </body>
 </html>

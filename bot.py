@@ -1,77 +1,31 @@
-import requests
-import time
-import json
-import random
-import subprocess
-import os
+import time, json, random, subprocess, os
 
-# --- إعدادات الهوية ---
-TOKEN = "8634146766:AAE7LdlYKd-GT6PpPN9DSxL7g-D1sb7Q79U"
-CHAT_ID = "1945385119"
-WEB_APP_URL = "https://hamzahassou.github.io/xbit-radar/"
-
-def clear_console():
-    os.system('clear')
-
-def git_push_engine(signal):
-    """المحرك المسؤول عن رفع البيانات للموقع فوراً"""
+def update_system(val):
     try:
-        data = {"signal": signal, "timestamp": time.time()}
+        # تحديث البيانات
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump({"signal": val, "timestamp": time.time()}, f)
         
-        # تنفيذ أوامر الرفع بصمت وسرعة
-        subprocess.run(["git", "add", "data.json"], check=True, capture_output=True)
-        subprocess.run(["git", "commit", "-m", f"⚡ Radar Update: {signal}x"], check=True, capture_output=True)
-        subprocess.run(["git", "push"], check=True, capture_output=True)
+        # تنظيف أي تعارض بالقوة
+        subprocess.run(["git", "add", "."], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto Update"], capture_output=True)
+        # استخدام force لضمان الرفع وتجاوز خطأ Rejected
+        subprocess.run(["git", "push", "origin", "main", "--force"], check=True)
         return True
     except Exception as e:
-        print(f"❌ خطأ في الرفع: {e}")
+        print(f"⚠️ خطأ: {e}")
         return False
 
-def send_radar_button():
-    """إرسال واجهة الدخول للمستخدم لمرة واحدة فقط"""
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-    text = (
-        "🚀 **نظام رادار حمزة AMKOM جاهز**\n\n"
-        "تم تفعيل نظام الربط المباشر مع الترمكس.\n"
-        "اضغط على الزر بالأسفل لفتح الرادار ومراقبة الأرقام."
-    )
-    payload = {
-        "chat_id": CHAT_ID,
-        "text": text,
-        "parse_mode": "Markdown",
-        "reply_markup": {
-            "inline_keyboard": [[
-                {"text": "🚀 فتح الرادار المباشر", "web_app": {"url": WEB_APP_URL}}
-            ]]
-        }
-    }
-    requests.post(url, json=payload)
-
 def main():
-    clear_console()
-    print("====================================")
-    print("   🚀 HAMZA RADAR ENGINE V10.0      ")
-    print("   STATUS: CONNECTED TO GITHUB      ")
-    print("====================================")
-    
-    # إرسال زر الفتح عند بداية التشغيل
-    send_radar_button()
-    print("✅ تم إرسال زر فتح الموقع للتلجرام.")
-
+    os.system('clear')
+    print("💎 HAMZA AMKOM RADAR - POWER MODE 💎")
     while True:
-        # خوارزمية توليد الأرقام (توقع عالي الدقة)
-        prediction = round(random.uniform(1.20, 6.50), 2)
-        
-        print(f"📡 إشارة جديدة: {prediction}x | جاري الرفع...", end="\r")
-        
-        # الرفع للموقع
-        if git_push_engine(prediction):
-            print(f"📡 إشارة جديدة: {prediction}x | ✅ تم التحديث بنجاح")
-        
-        # الانتظار لضمان استقرار الموقع (يفضل 15-20 ثانية)
-        time.sleep(15)
+        signal = round(random.uniform(1.15, 4.80), 2)
+        if update_system(signal):
+            print(f"✅ تم التحديث بنجاح: {signal}x")
+        else:
+            print("❌ فشل في المزامنة.. جارٍ إعادة المحاولة")
+        time.sleep(20)
 
 if __name__ == "__main__":
     main()
