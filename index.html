@@ -6,33 +6,47 @@
     <title>HAMZA RADAR LIVE</title>
     <style>
         body { background: #0a0a0a; color: white; font-family: sans-serif; text-align: center; height: 100vh; margin: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .rocket { font-size: 60px; animation: move 1s infinite alternate; }
-        @keyframes move { from { transform: translateY(0); } to { transform: translateY(-10px); } }
-        .card { border: 2px solid #2ecc71; padding: 30px; border-radius: 20px; background: rgba(255,255,255,0.05); box-shadow: 0 0 20px #2ecc71; width: 80%; max-width: 400px; }
-        #prediction { font-size: 80px; font-weight: bold; color: #2ecc71; margin: 10px 0; }
-        .status { color: #00ff00; font-size: 13px; }
-        .dot { height: 10px; width: 10px; background: #0f0; border-radius: 50%; display: inline-block; animation: blink 1s infinite; }
+        .card { border: 2px solid #2ecc71; padding: 30px; border-radius: 20px; background: rgba(46, 204, 113, 0.1); box-shadow: 0 0 25px #2ecc71; width: 85%; max-width: 350px; }
+        #prediction { font-size: 80px; font-weight: bold; color: #2ecc71; text-shadow: 0 0 15px #2ecc71; margin: 15px 0; }
+        .status { color: #00ff00; font-size: 13px; letter-spacing: 1px; }
+        .dot { height: 10px; width: 10px; background: #0f0; border-radius: 50%; display: inline-block; animation: blink 1s infinite; margin-right: 5px; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } }
+        .rocket { font-size: 50px; margin-bottom: 10px; animation: bounce 1.5s infinite alternate; }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-15px); } }
     </style>
 </head>
 <body>
     <div class="rocket">🚀</div>
     <div class="card">
-        <h2 style="color:#888; font-size:16px;">1XBET CRASH PREDICTION</h2>
+        <h2 style="color:#aaa; font-size:14px; margin:0;">1XBET CRASH PREDICTION</h2>
         <div id="prediction">--x</div>
         <div class="status"><span class="dot"></span> LIVE ANALYSIS ACTIVE</div>
     </div>
+
     <script>
-        const dataUrl = "https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json";
-        async function fetchSignal() {
+        // ملاحظة: استبدل اليوزر نيم إذا كان مختلفاً
+        const user = "Hamzahassou"; 
+        const repo = "xbit-radar";
+        const url = `https://raw.githubusercontent.com/${user}/${repo}/main/data.json`;
+
+        async function fetchNewData() {
             try {
-                const r = await fetch(dataUrl + "?t=" + Date.now());
-                const d = await r.json();
-                if(d.signal) document.getElementById('prediction').innerText = d.signal + "x";
-            } catch (e) { console.log("Error fetching data"); }
+                // إضافة timestamp لمنع التخزين المؤقت (Cache)
+                const response = await fetch(`${url}?t=${new Date().getTime()}`);
+                const data = await response.json();
+                
+                if (data.signal) {
+                    document.getElementById('prediction').innerText = data.signal + "x";
+                    console.log("Updated to: " + data.signal);
+                }
+            } catch (error) {
+                console.error("خطأ في جلب البيانات:", error);
+            }
         }
-        setInterval(fetchSignal, 5000);
-        fetchSignal();
+
+        // تحديث كل 3 ثوانٍ لضمان السرعة
+        setInterval(fetchNewData, 3000);
+        fetchNewData();
     </script>
 </body>
 </html>
