@@ -3,39 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMZA RADAR LIVE</title>
+    <title>HAMZA RADAR V12</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; display: flex; flex-direction: column; justify-content: center; height: 100vh; margin: 0; }
-        .container { border: 2px solid #00ff00; padding: 20px; border-radius: 15px; width: 80%; margin: auto; box-shadow: 0 0 20px #00ff00; }
-        #number { font-size: 70px; font-weight: bold; color: #00ff00; margin: 20px 0; }
-        .btn { background: #00ff00; color: #000; padding: 15px 30px; border-radius: 10px; font-weight: bold; border: none; cursor: pointer; }
+        body { background: #0a0a0a; color: white; font-family: sans-serif; text-align: center; height: 100vh; margin: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .card { border: 2px solid #2ecc71; padding: 30px; border-radius: 20px; background: rgba(46, 204, 113, 0.05); box-shadow: 0 0 20px rgba(46, 204, 113, 0.2); width: 85%; max-width: 350px; }
+        #prediction { font-size: 80px; font-weight: bold; color: #2ecc71; text-shadow: 0 0 15px #2ecc71; margin: 15px 0; }
+        .start-btn { background: #2ecc71; color: #000; border: none; padding: 15px 40px; font-size: 18px; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h3>1XBET CRASH RADAR</h3>
-        <div id="number">--x</div>
-        <button class="btn" onclick="startUpdates()">إبدأ الرادار</button>
-        <p id="status" style="font-size: 12px; color: #555;">الحالة: جاهز</p>
+    <div class="card">
+        <h2 style="color:#aaa; font-size:14px; margin:0;">1XBET CRASH PREDICTION</h2>
+        <div id="prediction">--x</div>
+        <button class="start-btn" id="btn" onclick="startRadar()">إبدأ الرادار</button>
     </div>
-
     <script>
-        async function getSignal() {
+        async function fetchNewData() {
             try {
-                // إضافة رقم عشوائي للرابط لمنع المتصفح من حفظ النسخة القديمة
-                const url = "https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json?v=" + Math.random();
+                // إضافة متغير عشوائي لكسر التخزين (Cache)
+                const url = `https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json?v=${Math.random()}`;
                 const response = await fetch(url, { cache: 'no-store' });
                 const data = await response.json();
-                document.getElementById('number').innerText = data.signal + "x";
-                document.getElementById('status').innerText = "آخر تحديث: " + new Date().toLocaleTimeString();
-            } catch (e) {
-                console.log("جاري البحث عن إشارة...");
-            }
+                document.getElementById('prediction').innerText = data.signal + "x";
+            } catch (e) { console.log("جاري الانتظار..."); }
         }
-
-        function startUpdates() {
-            document.getElementById('status').innerText = "الحالة: متصل بالرادار...";
-            setInterval(getSignal, 2000); // تحديث كل ثانيتين
+        function startRadar() {
+            document.getElementById('btn').style.display = 'none';
+            setInterval(fetchNewData, 2000);
         }
     </script>
 </body>
