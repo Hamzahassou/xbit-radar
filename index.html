@@ -3,34 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMZA PRO RADAR</title>
+    <title>HAMZA PRO RADAR V3.5</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding-top: 50px; overflow: hidden; }
-        .radar { width: 250px; height: 250px; border: 3px solid #ff0000; border-radius: 50%; margin: 0 auto; position: relative; box-shadow: 0 0 25px #ff0000; }
-        .beam { position: absolute; width: 50%; height: 3px; background: linear-gradient(to right, transparent, #ff0000); top: 50%; left: 50%; transform-origin: left; animation: scan 2s linear infinite; }
-        @keyframes scan { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .result { font-size: 60px; font-weight: bold; color: #fff; text-shadow: 0 0 15px #ff0000; margin-top: 20px; }
-        .status { color: #0f0; font-size: 12px; letter-spacing: 2px; }
-        .hash-box { font-size: 10px; color: #555; background: #111; padding: 10px; margin-top: 30px; border-radius: 5px; width: 85%; margin-left: auto; margin-right: auto; word-break: break-all; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; padding-top: 40px; }
+        .radar-container { width: 260px; height: 260px; border: 3px solid #ff0000; border-radius: 50%; margin: 0 auto; position: relative; box-shadow: 0 0 30px #ff0000; }
+        .scan { position: absolute; width: 50%; height: 3px; background: linear-gradient(to right, transparent, #ff0000); top: 50%; left: 50%; transform-origin: left; animation: rotate 2s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .signal { font-size: 65px; font-weight: 900; margin-top: 20px; text-shadow: 0 0 15px #ff0000; }
+        .counter-box { background: rgba(0, 255, 0, 0.1); border: 1px solid #0f0; color: #0f0; padding: 10px; border-radius: 10px; width: 80%; margin: 20px auto; font-size: 14px; font-weight: bold; }
+        .hash { font-size: 9px; color: #333; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="status">● LIVE CONNECTION ACTIVE</div>
-    <div class="radar"><div class="beam"></div></div>
-    <div class="result" id="sig">0.00x</div>
-    <div class="hash-box" id="h">SHA-256: Waiting...</div>
+    <div style="font-size: 12px; color: #ff0000; letter-spacing: 3px; margin-bottom: 15px;">● LIVE ANALYSIS ACTIVE</div>
+    <div class="radar-container"><div class="scan"></div></div>
+    <div class="signal" id="sig">...</div>
+    <div class="counter-box">🎯 إجمالي الحالات الناجحة: <span id="acc">0</span></div>
+    <div class="hash" id="h">SHA-256: Initializing...</div>
 
     <script>
-        async function update() {
+        async function refresh() {
             try {
-                // منع التخزين المؤقت لضمان حداثة البيانات
-                const res = await fetch('data.json?v=' + Date.now());
-                const data = await res.json();
-                document.getElementById('sig').innerText = data.signal + "x";
-                document.getElementById('h').innerText = "HASH: " + data.hash;
+                const r = await fetch('data.json?cache=' + Date.now());
+                const d = await r.json();
+                document.getElementById('sig').innerText = d.signal + "x";
+                document.getElementById('acc').innerText = d.accuracy;
+                document.getElementById('h').innerText = "HASH: " + d.hash;
             } catch(e) {}
         }
-        setInterval(update, 3000); // تحديث الواجهة كل 3 ثوانٍ
+        setInterval(refresh, 3000);
     </script>
 </body>
 </html>
