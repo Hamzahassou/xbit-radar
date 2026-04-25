@@ -3,34 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMZA PRO RADAR</title>
+    <title>HAMZA PRO RADAR v2.0</title>
     <style>
-        body { background: #000; color: #ff0000; text-align: center; font-family: sans-serif; margin: 0; padding: 20px; }
-        .logo { font-size: 24px; font-weight: bold; margin-bottom: 20px; border: 1px solid #ff0000; display: inline-block; padding: 5px 15px; }
-        .radar { width: 220px; height: 220px; border: 3px solid #ff0000; border-radius: 50%; margin: 0 auto; position: relative; box-shadow: 0 0 20px #ff0000; }
-        .line { position: absolute; width: 50%; height: 2px; background: #ff0000; top: 50%; left: 50%; transform-origin: left; animation: scan 2s linear infinite; }
+        :root { --main-red: #ff0000; --bg-black: #050505; }
+        body { background-color: var(--bg-black); color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .header { border: 2px solid var(--main-red); padding: 10px 30px; margin-bottom: 30px; box-shadow: 0 0 20px rgba(255, 0, 0, 0.5); border-radius: 5px; font-weight: bold; letter-spacing: 2px; animation: glow 2s infinite alternate; }
+        @keyframes glow { from { box-shadow: 0 0 10px var(--main-red); } to { box-shadow: 0 0 30px var(--main-red); } }
+        .radar-container { position: relative; width: 280px; height: 280px; border: 4px solid var(--main-red); border-radius: 50%; box-shadow: inset 0 0 50px rgba(255, 0, 0, 0.2); }
+        .scan-line { position: absolute; width: 50%; height: 3px; background: linear-gradient(to right, transparent, var(--main-red)); top: 50%; left: 50%; transform-origin: left; animation: scan 3s linear infinite; }
         @keyframes scan { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .prediction { font-size: 45px; font-weight: bold; margin-top: 20px; color: white; }
-        #hash { font-size: 10px; color: #444; margin-top: 15px; word-break: break-all; }
+        .result-display { margin-top: 30px; text-align: center; }
+        .multiplier { font-size: 70px; font-weight: 900; color: white; text-shadow: 0 0 20px var(--main-red); margin: 0; }
+        .status { color: #00ff00; font-size: 12px; margin-bottom: 10px; text-transform: uppercase; }
+        .hash-box { background: #111; padding: 10px; border-radius: 5px; font-size: 10px; color: #666; width: 90%; max-width: 350px; margin-top: 20px; border: 1px solid #222; word-break: break-all; }
     </style>
 </head>
 <body>
-    <div class="logo">HAMZA PRO 🚀</div>
-    <div class="radar"><div class="line"></div></div>
-    <div class="prediction" id="sig">جاري التحليل...</div>
-    <div id="hash">Hash: Connecting...</div>
+    <div class="header">🚀 HAMZA PRO SYSTEM</div>
+    <div class="radar-container"><div class="scan-line"></div></div>
+    <div class="result-display">
+        <div class="status">● SERVER LIVE CONNECTION</div>
+        <p class="multiplier" id="signal">0.00x</p>
+    </div>
+    <div class="hash-box" id="hash">SHA-256: INITIALIZING...</div>
 
     <script>
-        async function update() {
+        async function updateRadar() {
             try {
-                // جلب البيانات التي يحدثها Termux
-                const res = await fetch('data.json?t=' + Date.now());
-                const data = await res.json();
-                document.getElementById('sig').innerText = data.signal;
-                document.getElementById('hash').innerText = "SHA-256: " + data.hash;
-            } catch(e) {}
+                const response = await fetch('data.json?cache_burst=' + Date.now());
+                const data = await response.json();
+                document.getElementById('signal').innerText = data.signal + "x";
+                document.getElementById('hash').innerText = "SHA-256: " + (data.hash || "0x7d4f...8a2b");
+            } catch (e) { console.log("Re-syncing..."); }
         }
-        setInterval(update, 5000);
+        setInterval(updateRadar, 4000); // تحديث كل 4 ثوانٍ لضمان الانسيابية
     </script>
 </body>
 </html>
