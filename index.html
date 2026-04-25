@@ -3,50 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMZA RADAR LIVE</title>
+    <title>HAMZA RADAR V10</title>
     <style>
         body { background: #0a0a0a; color: white; font-family: sans-serif; text-align: center; height: 100vh; margin: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .card { border: 2px solid #2ecc71; padding: 30px; border-radius: 20px; background: rgba(46, 204, 113, 0.1); box-shadow: 0 0 25px #2ecc71; width: 85%; max-width: 350px; }
+        .card { border: 2px solid #2ecc71; padding: 30px; border-radius: 20px; background: rgba(46, 204, 113, 0.05); box-shadow: 0 0 20px rgba(46, 204, 113, 0.2); width: 85%; max-width: 350px; transition: 0.5s; }
         #prediction { font-size: 80px; font-weight: bold; color: #2ecc71; text-shadow: 0 0 15px #2ecc71; margin: 15px 0; }
-        .status { color: #00ff00; font-size: 13px; letter-spacing: 1px; }
-        .dot { height: 10px; width: 10px; background: #0f0; border-radius: 50%; display: inline-block; animation: blink 1s infinite; margin-right: 5px; }
+        .status { color: #888; font-size: 13px; margin-bottom: 20px; }
+        
+        /* تصميم زر البدء */
+        .start-btn {
+            background: #2ecc71; color: #000; border: none; padding: 15px 40px; font-size: 18px; font-weight: bold;
+            border-radius: 50px; cursor: pointer; box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+            transition: 0.3s; text-transform: uppercase;
+        }
+        .start-btn:hover { transform: scale(1.05); background: #27ae60; }
+        .start-btn:active { transform: scale(0.95); }
+        
+        .dot { height: 10px; width: 10px; background: #555; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .active-dot { background: #0f0; animation: blink 1s infinite; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } }
-        .rocket { font-size: 50px; margin-bottom: 10px; animation: bounce 1.5s infinite alternate; }
-        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-15px); } }
     </style>
 </head>
 <body>
-    <div class="rocket">🚀</div>
     <div class="card">
         <h2 style="color:#aaa; font-size:14px; margin:0;">1XBET CRASH PREDICTION</h2>
         <div id="prediction">--x</div>
-        <div class="status"><span class="dot"></span> LIVE ANALYSIS ACTIVE</div>
+        <div class="status" id="status-text"><span class="dot" id="status-dot"></span> WAITING TO START</div>
+        
+        <button class="start-btn" id="start-btn" onclick="startRadar()">إبدأ الرادار</button>
     </div>
 
     <script>
-        // ملاحظة: استبدل اليوزر نيم إذا كان مختلفاً
         const user = "Hamzahassou"; 
         const repo = "xbit-radar";
         const url = `https://raw.githubusercontent.com/${user}/${repo}/main/data.json`;
+        let isRunning = false;
 
         async function fetchNewData() {
+            if (!isRunning) return;
             try {
-                // إضافة timestamp لمنع التخزين المؤقت (Cache)
                 const response = await fetch(`${url}?t=${new Date().getTime()}`);
                 const data = await response.json();
-                
                 if (data.signal) {
                     document.getElementById('prediction').innerText = data.signal + "x";
-                    console.log("Updated to: " + data.signal);
                 }
             } catch (error) {
-                console.error("خطأ في جلب البيانات:", error);
+                console.log("جاري الانتظار...");
             }
         }
 
-        // تحديث كل 3 ثوانٍ لضمان السرعة
-        setInterval(fetchNewData, 3000);
-        fetchNewData();
+        function startRadar() {
+            isRunning = true;
+            document.getElementById('start-btn').style.display = 'none'; // إخفاء الزر بعد الضغط
+            document.getElementById('status-text').innerHTML = '<span class="dot active-dot"></span> LIVE ANALYSIS ACTIVE';
+            document.getElementById('status-text').style.color = '#00ff00';
+            document.getElementById('prediction').style.color = '#2ecc71';
+            
+            // البدء بجلب البيانات فوراً وتكرارها
+            setInterval(fetchNewData, 2000); 
+            fetchNewData();
+        }
     </script>
 </body>
 </html>
