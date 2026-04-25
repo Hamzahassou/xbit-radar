@@ -1,34 +1,39 @@
 import time, json, random, requests, subprocess
 
-# إعداداتك الخاصة
 TOKEN = "8519587497:AAFAdSa2zHxd8twT13P5lTw-XF0-0-JNPH0"
 CHAT_ID = "1945385119"
 URL = "https://hamzahassou.github.io/xbit-radar/"
 
-def push_data():
+def sync_to_github():
     try:
         subprocess.run(["git", "add", "."], check=True)
-        subprocess.run(["git", "commit", "-m", "fix_update"], capture_output=True)
+        subprocess.run(["git", "commit", "-m", "update"], capture_output=True)
+        # الرفع الإجباري لمسح أي ملفات قديمة معلقة
         subprocess.run(["git", "push", "origin", "main", "--force"], check=True)
         return True
-    except:
+    except Exception as e:
+        print(f"❌ Error: {e}")
         return False
 
-print("💀 HAMZA RADAR V12 - FULL RESET ACTIVE")
+print("🚀 HAMZA RADAR ENGINE STARTING...")
 while True:
-    # توليد قيمة عشوائية جديدة
-    val = round(random.uniform(1.3, 4.8), 2)
+    # توليد الرقم
+    new_val = round(random.uniform(1.2, 4.8), 2)
     
-    # كتابة البيانات في الملف
+    # تحديث الملف المحلي
     with open("data.json", "w") as f:
-        json.dump({"signal": val}, f)
+        json.dump({"signal": new_val}, f)
     
-    if push_data():
-        # إرسال التحديث للتليجرام
-        msg = f"💀 إشارة جديدة: {val}x\n🚀 تم تحديث الرادار بنجاح"
-        markup = {"inline_keyboard": [[{"text": "🔥 فتح الرادار", "web_app": {"url": URL}}]]}
-        requests.post(f"https://api.telegram.org/bot{TOKEN}/sendMessage", json={"chat_id": CHAT_ID, "text": msg, "reply_markup": markup})
-        print(f"✅ تم الرفع: {val}x")
+    # الرفع لـ GitHub
+    if sync_to_github():
+        # إرسال الرسالة للتليجرام
+        payload = {
+            "chat_id": CHAT_ID,
+            "text": f"💀 إشارة رادار جديدة: {new_val}x",
+            "reply_markup": {"inline_keyboard": [[{"text": "🔥 فتح الرادار", "web_app": {"url": URL}}]]}
+        }
+        requests.post(f"https://api.telegram.org/bot{TOKEN}/sendMessage", json=payload)
+        print(f"✅ SIGNAL DEPLOYED: {new_val}x")
     
-    time.sleep(25) # انتظار 25 ثانية لضمان استقرار السيرفر
+    time.sleep(25) # وقت كافي لضمان استقرار السيرفر
 
