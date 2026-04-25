@@ -6,24 +6,15 @@
     <title>HAMZA DARK RADAR</title>
     <style>
         body { background: #050505; color: #ff0000; font-family: 'Courier New', monospace; text-align: center; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .radar-box { border: 2px solid #ff0000; padding: 40px; border-radius: 30px; background: rgba(255, 0, 0, 0.02); box-shadow: 0 0 50px rgba(255, 0, 0, 0.2); width: 80%; max-width: 400px; position: relative; }
-        
-        /* الجمجمة المتوهجة */
+        .radar-box { border: 2px solid #ff0000; padding: 40px; border-radius: 30px; background: rgba(255, 0, 0, 0.02); box-shadow: 0 0 50px rgba(255, 0, 0, 0.2); width: 85%; max-width: 400px; position: relative; }
         .skull { font-size: 60px; margin-bottom: 10px; filter: drop-shadow(0 0 10px #ff0000); animation: flicker 3s infinite; }
         @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        /* دائرة الأرقام */
-        .circle { width: 200px; height: 200px; border: 5px solid #ff0000; border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: inset 0 0 30px #ff0000, 0 0 30px #ff0000; }
+        .circle { width: 180px; height: 180px; border: 5px solid #ff0000; border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: inset 0 0 30px #ff0000, 0 0 30px #ff0000; }
         .circle::after { content: ''; position: absolute; width: 105%; height: 105%; border: 2px dashed #ff0000; border-radius: 50%; animation: rotate 5s linear infinite; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        #prediction { font-size: 70px; font-weight: bold; text-shadow: 0 0 20px #ff0000; }
-
-        /* الصاروخ المهتز */
-        .rocket { font-size: 40px; position: absolute; top: -20px; right: -20px; display: none; animation: shake 0.2s infinite; }
+        #prediction { font-size: 65px; font-weight: bold; text-shadow: 0 0 20px #ff0000; }
+        .rocket { font-size: 45px; position: absolute; top: -25px; right: -20px; display: none; animation: shake 0.2s infinite; }
         @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 50% { transform: translate(-1px, -2px) rotate(-1deg); } 100% { transform: translate(1px, 1px) rotate(0deg); } }
-
-        /* زر بدء الاختراق */
         .btn { background: #ff0000; color: #000; padding: 15px 40px; border-radius: 50px; font-weight: bold; border: none; cursor: pointer; font-size: 18px; box-shadow: 0 0 20px #ff0000; transition: 0.3s; }
         .btn:hover { transform: scale(1.1); box-shadow: 0 0 40px #ff0000; }
     </style>
@@ -32,18 +23,15 @@
     <div class="radar-box">
         <div class="rocket" id="rocket">🚀</div>
         <div class="skull">💀</div>
-        <div style="font-size: 12px; letter-spacing: 3px;">SYSTEM: HAMZA_V12</div>
-        <div class="circle">
-            <div id="prediction">--x</div>
-        </div>
+        <div style="font-size: 12px; letter-spacing: 3px; color: #555;">HAMZA_RADAR_V12</div>
+        <div class="circle"><div id="prediction">--x</div></div>
         <button class="btn" id="startBtn" onclick="activate()">إبدأ الاختراق</button>
-        <div id="status" style="margin-top:20px; font-size:10px; color:#555;">STATUS: OFFLINE</div>
+        <div id="status" style="margin-top:20px; font-size:10px; color:#333;">STATUS: WAITING...</div>
     </div>
-
     <script>
         async function getData() {
             try {
-                const r = await fetch('https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json?v=' + Math.random());
+                const r = await fetch('https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json?v=' + Math.random(), { cache: 'no-store' });
                 const d = await r.json();
                 document.getElementById('prediction').innerText = d.signal + "x";
             } catch(e) {}
@@ -51,7 +39,7 @@
         function activate() {
             document.getElementById('startBtn').style.display = 'none';
             document.getElementById('rocket').style.display = 'block';
-            document.getElementById('status').innerText = "STATUS: LIVE INJECTION...";
+            document.getElementById('status').innerText = "STATUS: LIVE INJECTION ACTIVE";
             document.getElementById('status').style.color = "#ff0000";
             setInterval(getData, 2000);
         }
