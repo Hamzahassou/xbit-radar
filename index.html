@@ -3,62 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMZA DARK RADAR V12</title>
+    <title>DARK INJECTION V12</title>
     <style>
-        body { background: #050505; color: #ff0000; font-family: 'Courier New', monospace; text-align: center; height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .container { border: 2px solid #ff0000; padding: 40px; border-radius: 30px; background: rgba(255, 0, 0, 0.03); box-shadow: 0 0 50px rgba(255, 0, 0, 0.3); width: 85%; max-width: 400px; position: relative; }
-        
-        /* تأثير الجمجمة */
-        .skull { font-size: 70px; margin-bottom: 10px; filter: drop-shadow(0 0 15px #ff0000); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        body {
+            background-color: #000;
+            color: #ff0000;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
 
-        /* الرادار الدائري */
-        .radar-circle { width: 190px; height: 190px; border: 4px solid #ff0000; border-radius: 50%; margin: 25px auto; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: inset 0 0 40px #ff0000, 0 0 30px #ff0000; }
-        .radar-circle::after { content: ''; position: absolute; width: 100%; height: 100%; border: 2px dashed #ff0000; border-radius: 50%; animation: spin 4s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .container {
+            border: 2px solid #ff0000;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 0 20px #ff0000;
+            position: relative;
+        }
 
-        #prediction { font-size: 75px; font-weight: bold; text-shadow: 0 0 25px #ff0000; z-index: 10; }
+        .skull {
+            font-size: 50px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 10px #ff0000);
+        }
 
-        /* الصاروخ المهتز */
-        .rocket { font-size: 45px; position: absolute; top: -20px; right: -20px; display: none; animation: vibrate 0.15s infinite; }
-        @keyframes vibrate { 0% { transform: translate(0); } 25% { transform: translate(2px, -2px); } 50% { transform: translate(-2px, 2px); } 75% { transform: translate(2px, 2px); } 100% { transform: translate(0); } }
+        .version {
+            font-size: 10px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
 
-        .btn { background: #ff0000; color: #000; padding: 18px 45px; border-radius: 50px; font-weight: bold; border: none; cursor: pointer; font-size: 20px; box-shadow: 0 0 25px #ff0000; transition: 0.4s; width: 100%; }
-        .btn:hover { background: #fff; box-shadow: 0 0 50px #fff; transform: translateY(-3px); }
-        .status { margin-top: 20px; font-size: 11px; letter-spacing: 2px; color: #444; }
+        .circle {
+            width: 150px;
+            height: 150px;
+            border: 3px solid #ff0000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: inset 0 0 15px #ff0000, 0 0 15px #ff0000;
+        }
+
+        #prediction {
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .btn {
+            background-color: #ff0000;
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 15px #ff0000;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 5px #ff0000;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+
+        #rocket {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 30px;
+            display: none;
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <div class="rocket" id="rocket">🚀</div>
+        <div id="rocket">🚀</div>
         <div class="skull">💀</div>
-        <div style="font-size: 12px; opacity: 0.6;">DARK_INJECTION_V12</div>
-        <div class="radar-circle">
-            <div id="prediction">--x</div>
+        <div class="version">DARK_INJECTION_V12</div>
+        
+        <div class="circle">
+            <div id="prediction">-- X</div>
         </div>
-        <button class="btn" id="startBtn" onclick="activateRadar()">ACTIVATE RADAR</button>
-        <div class="status" id="status">SYSTEM IDLE</div>
+
+        <button class="btn" onclick="activateRadar()">ACTIVATE RADAR</button>
+        
+        <div id="status">SYSTEM IDLE</div>
     </div>
 
     <script>
-        async function fetchSignal() {
+        // الرابط المباشر لملفك على GitHub
+        const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json';
+
+        async function updateSignal() {
             try {
-                // إضافة التوقيت الزمني لمنع التخزين المؤقت (Cache)
-                const url = 'https://raw.githubusercontent.com/Hamzahassou/xbit-radar/main/data.json?nocache=' + new Date().getTime();
-                const response = await fetch(url);
+                // إضافة متغير الوقت (Date.now) يجبر المتصفح على جلب الرقم الجديد فوراً وتخطي الكاش
+                const response = await fetch(`${GITHUB_RAW_URL}?t=${Date.now()}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                
                 const data = await response.json();
+                
                 if (data.signal) {
+                    // تحديث الرقم في الدائرة
                     document.getElementById('prediction').innerText = data.signal + "x";
                 }
-            } catch (err) { console.error("Update Failed"); }
+            } catch (error) {
+                console.error("خطأ في الاتصال بالرادار:", error);
+            }
         }
 
         function activateRadar() {
-            document.getElementById('startBtn').style.display = 'none';
+            // 1. تفعيل المؤثرات البصرية
             document.getElementById('rocket').style.display = 'block';
             document.getElementById('status').innerText = "STATUS: INJECTING SIGNALS...";
-            document.getElementById('status').style.color = "#ff0000";
-            setInterval(fetchSignal, 1500); // تحديث سريع كل 1.5 ثانية
+            
+            // 2. تشغيل التحديث التلقائي كل ثانية واحدة لضمان السرعة
+            setInterval(updateSignal, 1000); 
+            
+            // جلب أول رقم فوراً عند الضغط
+            updateSignal();
         }
     </script>
 </body>
