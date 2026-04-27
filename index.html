@@ -3,80 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMZA APPLE RADAR V1</title>
+    <title>HAMZA APPLE PRO V2</title>
     <style>
-        body { background: #002b1a; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding-top: 30px; overflow: hidden; background-image: radial-gradient(circle, #005030 0%, #001a10 100%); }
-        .header { font-size: 14px; color: #ffcc00; letter-spacing: 2px; text-shadow: 0 0 10px #ffcc00; margin-bottom: 20px; }
+        body { background: #01130e; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding-top: 30px; overflow-x: hidden; background-image: radial-gradient(circle, #012a1f 0%, #010a08 100%); }
+        .header { font-size: 13px; color: #ffcc00; letter-spacing: 2px; text-shadow: 0 0 10px #ffcc00; margin-bottom: 25px; }
         
-        /* تصميم شبكة التفاحات الشبيه باللعبة */
-        .game-grid { display: flex; flex-direction: column-reverse; width: 280px; margin: 0 auto; gap: 8px; }
-        .row { display: flex; gap: 8px; }
+        /* شبكة اللعبة الاحترافية */
+        .game-grid { display: flex; flex-direction: column-reverse; width: 290px; margin: 0 auto; gap: 7px; }
+        .row { display: flex; gap: 7px; align-items: center; position: relative; }
         
-        /* الصناديق الخشبية المغلقة */
-        .box { width: 48px; height: 48px; background: #8b4513; border-radius: 8px; border: 2px solid #5d2e0a; box-shadow: inset 0 0 15px #000; position: relative; transition: all 0.3s; }
-        
-        /* مؤشر المستوى الحالي على اليسار */
-        .level-indicator { width: 40px; color: #0f0; font-size: 12px; font-weight: bold; line-height: 48px; text-align: right; margin-right: 10px; }
+        /* مؤشر المستويات على اليسار (L1-L5) */
+        .level-indicator { width: 40px; color: #00ff00; font-size: 13px; font-weight: bold; text-align: right; margin-right: 12px; }
 
-        /* التفاحة السليمة (الخيار الآمن) */
-        .box.safe::after { content: '🍎'; font-size: 30px; position: absolute; top: 5px; left: 9px; animation: glow 1s infinite alternate; }
-        .box.safe { background: #00ff00; border-color: #fff; box-shadow: 0 0 20px #0f0; }
+        /* الصناديق الخشبية */
+        .box { width: 50px; height: 50px; background: #6f3a0c; border-radius: 9px; border: 2px solid #482306; box-shadow: inset 0 0 15px #000, 0 3px 5px rgba(0,0,0,0.5); position: relative; transition: all 0.2s ease-in-out; }
         
-        /* التفاحة الفاسدة (المخاطرة) */
-        .box.risk::after { content: '☠️'; font-size: 25px; position: absolute; top: 10px; left: 11px; opacity: 0.3; }
-        
-        /* المستوى الموصى به للتوقف */
-        .stop-zone { border: 3px solid #ffcc00; box-shadow: 0 0 20px #ffcc00; }
+        /* التفاحات الفاسدة الخلفية (Glow effect) */
+        .box::before { content: '☠️'; font-size: 26px; position: absolute; top: 10px; left: 12px; opacity: 0.15; filter: grayscale(1); }
 
-        @keyframes glow { from { transform: scale(1); opacity: 0.8; } to { transform: scale(1.1); opacity: 1; } }
+        /* التفاحة السليمة (المختارة من السكربت) */
+        .box.safe::after { content: '🍎'; font-size: 30px; position: absolute; top: 6px; left: 10px; animation: popIn 0.3s ease-out; }
+        .box.safe { background: #00ff00; border-color: #fff; box-shadow: 0 0 25px #0f0, inset 0 0 10px #fff; transform: scale(1.05); }
         
-        .control-panel { margin-top: 30px; font-size: 16px; color: #fff; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 10px; width: 80%; margin-left: auto; margin-right: auto; }
-        .success { color: #0f0; font-weight: bold; font-size: 20px; }
+        /* إطار منطقة الأمان (المستويات 1-3) */
+        .row.safe-zone::after { content: ''; position: absolute; left: 47px; top: -2px; width: 285px; height: 55px; border: 3px solid #ffcc00; border-radius: 12px; box-shadow: 0 0 20px rgba(255,204,0,0.6); pointer-events: none; z-items: -1; }
+
+        @keyframes popIn { 0% { transform: scale(0) rotate(-20deg); } 100% { transform: scale(1) rotate(0deg); } }
+        
+        /* لوحة التحكم والزر التفاعلي */
+        .panel { margin-top: 35px; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 15px; width: 85%; margin-left: auto; margin-right: auto; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .panel-text { font-size: 15px; color: #ccc; margin-bottom: 8px; direction: rtl; }
+        .success { color: #00ff00; font-weight: bold; font-size: 18px; }
+        
+        /* زر الجلب التفاعلي */
+        .fetch-btn { background: #ffcc00; color: #000; border: none; padding: 12px 25px; font-size: 16px; font-weight: bold; border-radius: 25px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(255,204,0,0.4); margin-top: 15px; text-transform: uppercase; }
+        .fetch-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(255,204,0,0.6); }
+        .fetch-btn:active { transform: translateY(1px); }
+        .fetch-btn.loading { background: #888; color: #fff; cursor: wait; }
+
     </style>
 </head>
 <body>
     <div class="header">● APPLE PROTOTYPE ACTIVE</div>
     
-    <div class="game-grid">
+    <div class="game-grid" id="grid">
         </div>
 
-    <div class="control-panel">
-        <div>المسار الآمن المقترح: <span class="success" id="path">جارِ التحليل...</span></div>
-        <div>🎯 نسبة الأمان المتوقعة: <span class="success">~90% (إلى المستوى 3)</span></div>
-        <div style="font-size: 10px; color: #888; margin-top: 10px;">Hash: Initializing...</div>
+    <div class="panel">
+        <div class="panel-text">المسار الآمن المقترح: <span class="success" id="path_text">جارِ التحليل...</span></div>
+        <div class="panel-text">🎯 نسبة الأمان المتوقعة: <span class="success">~90% (إلى المستوى 3)</span></div>
+        
+        <button class="fetch-btn" id="btn" onclick="fetchNewPath()">إضغط هنا لجلب المسار التالي</button>
+        
+        <div style="font-size: 9px; color: #444; margin-top: 15px; letter-spacing: 1px;">HASH: Verified_By_Hamza_Pro_V2</div>
     </div>
 
     <script>
-        // دالة لتوليد الشبكة وعرض المسار الآمن
+        // دالة لبناء الشبكة وعرض التفاحات الخضراء
         function buildGrid(path) {
-            const grid = document.querySelector('.game-grid');
-            grid.innerHTML = ''; // تفريغ الشبكة القديمة
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
             
-            // ننشئ 5 مستويات (صفوف)
             for (let r = 1; r <= 5; r++) {
                 const rowDiv = document.createElement('div');
                 rowDiv.className = 'row';
                 
-                // تحديد منطقة التوقف الآمن (تحت المستوى 4)
-                if (r < 4) rowDiv.classList.add('stop-zone');
+                // تحديد منطقة الأمان (المستويات 1-3)
+                if (r <= 3) rowDiv.classList.add('safe-zone');
 
-                // مؤشر المستوى
                 const levelDiv = document.createElement('div');
                 levelDiv.className = 'level-indicator';
                 levelDiv.innerText = 'L' + r;
                 rowDiv.appendChild(levelDiv);
 
-                // 5 مربعات (أعمدة) لكل صف
+                // الأعمدة الخمسة
                 for (let c = 1; c <= 5; c++) {
                     const boxDiv = document.createElement('div');
                     boxDiv.className = 'box';
                     
-                    // إذا كان هذا المربع هو المربع "الآمن" المختار من السكربت
+                    // إذا كان المربع مطابقاً للمسار الآمن من السكربت
                     if (path && path[r-1] === c) {
                         boxDiv.classList.add('safe');
-                    } else {
-                        // لإعطاء هيبة تقنية، نضع تفاحات فاسدة مخفية في الأماكن الأخرى
-                        boxDiv.classList.add('risk');
                     }
                     rowDiv.appendChild(boxDiv);
                 }
@@ -84,20 +91,35 @@
             }
         }
 
-        async function update() {
+        // دالة لجلب المسار الجديد عند الضغط على الزر
+        async function fetchNewPath() {
+            const btn = document.getElementById('btn');
+            btn.innerText = "جارِ التحليل...";
+            btn.classList.add('loading');
+            
             try {
-                const r = await fetch('data.json?v=' + Date.now());
+                // طلب البيانات من السكربت (bot.py) عبر واجهة data.json
+                const r = await fetch('data.json?refresh=' + Date.now());
                 const d = await r.json();
                 
-                // تحويل النص (مثلاً: "2,3,1") إلى مصفوفة أرقام [2, 3, 1]
+                // تحويل النص "2,1,4,4,4" إلى مصفوفة
                 const pathArray = d.path.split(',').map(Number);
                 
-                document.getElementById('path').innerText = d.path;
-                buildGrid(pathArray); // إعادة بناء الشبكة بالمسار الجديد
-            } catch(e) {}
+                // تحديث النص والشبكة
+                document.getElementById('path_text').innerText = d.path;
+                buildGrid(pathArray);
+                
+            } catch(e) {
+                document.getElementById('path_text').innerText = "فشل التحليل";
+            } finally {
+                // إعادة الزر لوضعه الطبيعي بعد انتهاء الطلب
+                btn.innerText = "إضغط هنا لجلب المسار التالي";
+                btn.classList.remove('loading');
+            }
         }
-        setInterval(update, 3000); // تحديث الواجهة كل 3 ثوانٍ
-        update(); // تحديث فوري عند التحميل
+
+        // جلب مسار أول عند تحميل الصفحة
+        fetchNewPath();
     </script>
 </body>
 </html>
