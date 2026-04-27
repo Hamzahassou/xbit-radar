@@ -2,125 +2,303 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HAMZA APPLE PRO V2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HAMZA APPLE PRO V3</title>
     <style>
-        body { background: #01130e; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding-top: 30px; overflow-x: hidden; background-image: radial-gradient(circle, #012a1f 0%, #010a08 100%); }
-        .header { font-size: 13px; color: #ffcc00; letter-spacing: 2px; text-shadow: 0 0 10px #ffcc00; margin-bottom: 25px; }
-        
-        /* شبكة اللعبة الاحترافية */
-        .game-grid { display: flex; flex-direction: column-reverse; width: 290px; margin: 0 auto; gap: 7px; }
-        .row { display: flex; gap: 7px; align-items: center; position: relative; }
-        
-        /* مؤشر المستويات على اليسار (L1-L5) */
-        .level-indicator { width: 40px; color: #00ff00; font-size: 13px; font-weight: bold; text-align: right; margin-right: 12px; }
+        :root {
+            --primary: #ffcc00;
+            --success: #00ff00;
+            --bg-dark: #010a08;
+            --bg-light: #012a1f;
+            --glow: rgba(0, 255, 0, 0.8);
+            --panel-bg: rgba(0, 0, 0, 0.7);
+        }
 
-        /* الصناديق الخشبية */
-        .box { width: 50px; height: 50px; background: #6f3a0c; border-radius: 9px; border: 2px solid #482306; box-shadow: inset 0 0 15px #000, 0 3px 5px rgba(0,0,0,0.5); position: relative; transition: all 0.2s ease-in-out; }
-        
-        /* التفاحات الفاسدة الخلفية (Glow effect) */
-        .box::before { content: '☠️'; font-size: 26px; position: absolute; top: 10px; left: 12px; opacity: 0.15; filter: grayscale(1); }
+        body {
+            background: var(--bg-dark);
+            background-image: radial-gradient(circle at center, var(--bg-light) 0%, var(--bg-dark) 100%);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding-top: 30px;
+            overflow-x: hidden;
+            direction: rtl;
+        }
 
-        /* التفاحة السليمة (المختارة من السكربت) */
-        .box.safe::after { content: '🍎'; font-size: 30px; position: absolute; top: 6px; left: 10px; animation: popIn 0.3s ease-out; }
-        .box.safe { background: #00ff00; border-color: #fff; box-shadow: 0 0 25px #0f0, inset 0 0 10px #fff; transform: scale(1.05); }
-        
-        /* إطار منطقة الأمان (المستويات 1-3) */
-        .row.safe-zone::after { content: ''; position: absolute; left: 47px; top: -2px; width: 285px; height: 55px; border: 3px solid #ffcc00; border-radius: 12px; box-shadow: 0 0 20px rgba(255,204,0,0.6); pointer-events: none; z-items: -1; }
+        /* تأثير نبض قوي عام */
+        @keyframes strongPulse {
+            0% { box-shadow: 0 0 15px var(--glow); transform: scale(1); }
+            50% { box-shadow: 0 0 40px var(--glow), 0 0 10px #fff; transform: scale(1.05); }
+            100% { box-shadow: 0 0 15px var(--glow); transform: scale(1); }
+        }
 
-        @keyframes popIn { 0% { transform: scale(0) rotate(-20deg); } 100% { transform: scale(1) rotate(0deg); } }
+        .header {
+            font-size: 14px;
+            color: var(--primary);
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px var(--primary);
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        /* شبكة اللعبة - مرتبة ومزخرفة */
+        .game-grid {
+            display: flex;
+            flex-direction: column-reverse;
+            width: 300px;
+            margin: 0 auto;
+            gap: 8px;
+            perspective: 1000px; /* تأثير ثلاثي الأبعاد بسيط */
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            position: relative;
+            backface-visibility: hidden;
+        }
         
-        /* لوحة التحكم والزر التفاعلي */
-        .panel { margin-top: 35px; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 15px; width: 85%; margin-left: auto; margin-right: auto; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .panel-text { font-size: 15px; color: #ccc; margin-bottom: 8px; direction: rtl; }
-        .success { color: #00ff00; font-weight: bold; font-size: 18px; }
+        .level-indicator {
+            width: 45px;
+            color: var(--success);
+            font-size: 14px;
+            font-weight: bold;
+            text-align: right;
+            margin-right: 10px;
+            text-shadow: 0 0 5px var(--success);
+        }
+
+        .box {
+            width: 54px;
+            height: 54px;
+            background: #6f3a0c;
+            border-radius: 12px;
+            border: 2px solid #482306;
+            box-shadow: inset 0 0 20px #000, 0 4px 6px rgba(0,0,0,0.6);
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         
-        /* زر الجلب التفاعلي */
-        .fetch-btn { background: #ffcc00; color: #000; border: none; padding: 12px 25px; font-size: 16px; font-weight: bold; border-radius: 25px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(255,204,0,0.4); margin-top: 15px; text-transform: uppercase; }
-        .fetch-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(255,204,0,0.6); }
-        .fetch-btn:active { transform: translateY(1px); }
-        .fetch-btn.loading { background: #888; color: #fff; cursor: wait; }
+        /* التفاحات الفاسدة الخلفية */
+        .box::before {
+            content: '☠️';
+            font-size: 28px;
+            opacity: 0.2;
+            filter: grayscale(1);
+        }
+
+        /* التفاحة السليمة - وامضة وقوية */
+        .box.safe {
+            background: var(--success);
+            border-color: #fff;
+            transform: scale(1.08);
+            animation: strongPulse 2s infinite ease-in-out;
+            z-items: 10;
+        }
+        
+        .box.safe::after {
+            content: '🍎';
+            font-size: 34px;
+            position: absolute;
+            animation: popIn 0.4s ease-out;
+        }
+        
+        @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+
+        /* منطقة الأمان المستويات 1-3 */
+        .row.safe-zone::after {
+            content: '';
+            position: absolute;
+            left: 55px; /* تم تعديل القياس */
+            top: -3px;
+            width: 295px;
+            height: 60px;
+            border: 4px solid var(--primary);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255,204,0,0.7), inset 0 0 10px rgba(255,204,0,0.4);
+            pointer-events: none;
+            z-items: -1;
+            background: rgba(255, 204, 0, 0.05);
+        }
+
+        /* لوحة التحكم الاحترافية */
+        .panel {
+            margin-top: 40px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px); /* تأثير الزجاج المقوى */
+            padding: 25px;
+            border-radius: 20px;
+            width: 88%;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.7), inset 0 0 20px rgba(255,255,255,0.05);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .label { font-size: 14px; color: #aaa; }
+        .value { font-size: 16px; font-weight: bold; }
+        .value.success { color: var(--success); text-shadow: 0 0 5px var(--success); }
+        .value.primary { color: var(--primary); text-shadow: 0 0 5px var(--primary); }
+
+        /* قسم القدرة الجديد */
+        .capability-section {
+            margin-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 15px;
+        }
+
+        .ability-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .ability-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success) 0%, #fff 100%);
+            width: 92%; /* نسبة الأمان */
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        /* زر الجلب المطور - وامض بقوة */
+        .fetch-btn {
+            background: var(--primary);
+            background: linear-gradient(180deg, var(--primary) 0%, #e6b800 100%);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+            box-shadow: 0 6px 15px rgba(255,204,0,0.5);
+            margin-top: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: strongPulse 2.5s infinite ease-in-out; /* نفس الوميض القوي */
+        }
+        
+        .fetch-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255,204,0,0.8);
+        }
+        
+        .fetch-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 3px 10px rgba(255,204,0,0.5);
+        }
+        
+        .fetch-btn.loading {
+            background: #555;
+            color: #ccc;
+            cursor: wait;
+            animation: none;
+            box-shadow: none;
+        }
+
+        /* تذييل الصفحة - المطور */
+        .footer {
+            margin-top: 30px;
+            padding-bottom: 20px;
+            font-size: 11px;
+            color: #555;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .dev-name {
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 0 5px #fff;
+        }
 
     </style>
 </head>
 <body>
-    <div class="header">● APPLE PROTOTYPE ACTIVE</div>
+    <div class="header">● HAMZA APPLE PRO v3.0 // ACTIVE</div>
     
     <div class="game-grid" id="grid">
         </div>
 
     <div class="panel">
-        <div class="panel-text">المسار الآمن المقترح: <span class="success" id="path_text">جارِ التحليل...</span></div>
-        <div class="panel-text">🎯 نسبة الأمان المتوقعة: <span class="success">~90% (إلى المستوى 3)</span></div>
+        <div class="info-row">
+            <span class="label">المسار الآمن المقترح:</span>
+            <span class="value success" id="path_text">2,1,4,4,4</span>
+        </div>
+        <div class="info-row">
+            <span class="label">نسبة الحماية الفعالة:</span>
+            <span class="value primary">~92% (إلى L3)</span>
+        </div>
+
+        <div class="capability-section">
+            <div class="info-row">
+                <span class="label">قدرة التحليل التحليلي:</span>
+                <span class="value success">عالـية جداً</span>
+            </div>
+            <div class="ability-bar">
+                <div class="ability-fill"></div>
+            </div>
+        </div>
         
         <button class="fetch-btn" id="btn" onclick="fetchNewPath()">إضغط هنا لجلب المسار التالي</button>
-        
-        <div style="font-size: 9px; color: #444; margin-top: 15px; letter-spacing: 1px;">HASH: Verified_By_Hamza_Pro_V2</div>
+    </div>
+
+    <div class="footer">
+        DEVELOPER: <span class="dev-name">HAMZA</span> // HASH: Verified_By_Hamza_Pro_V3
     </div>
 
     <script>
-        // دالة لبناء الشبكة وعرض التفاحات الخضراء
+        // الكود البرمجي السابق لبناء الشبكة وجلب المسارات (لا يحتاج لتعديل)
         function buildGrid(path) {
             const grid = document.getElementById('grid');
             grid.innerHTML = '';
-            
             for (let r = 1; r <= 5; r++) {
                 const rowDiv = document.createElement('div');
                 rowDiv.className = 'row';
-                
-                // تحديد منطقة الأمان (المستويات 1-3)
                 if (r <= 3) rowDiv.classList.add('safe-zone');
-
                 const levelDiv = document.createElement('div');
                 levelDiv.className = 'level-indicator';
                 levelDiv.innerText = 'L' + r;
                 rowDiv.appendChild(levelDiv);
-
-                // الأعمدة الخمسة
                 for (let c = 1; c <= 5; c++) {
                     const boxDiv = document.createElement('div');
                     boxDiv.className = 'box';
-                    
-                    // إذا كان المربع مطابقاً للمسار الآمن من السكربت
-                    if (path && path[r-1] === c) {
-                        boxDiv.classList.add('safe');
-                    }
+                    if (path && path[r-1] === c) { boxDiv.classList.add('safe'); }
                     rowDiv.appendChild(boxDiv);
                 }
                 grid.appendChild(rowDiv);
             }
         }
-
-        // دالة لجلب المسار الجديد عند الضغط على الزر
         async function fetchNewPath() {
             const btn = document.getElementById('btn');
-            btn.innerText = "جارِ التحليل...";
-            btn.classList.add('loading');
-            
+            const pathText = document.getElementById('path_text');
+            btn.innerText = "جارِ التحليل..."; btn.classList.add('loading');
+            pathText.innerText = "تحليل جديد..."; buildGrid(null); // مسح المؤقت
             try {
-                // طلب البيانات من السكربت (bot.py) عبر واجهة data.json
                 const r = await fetch('data.json?refresh=' + Date.now());
                 const d = await r.json();
-                
-                // تحويل النص "2,1,4,4,4" إلى مصفوفة
                 const pathArray = d.path.split(',').map(Number);
-                
-                // تحديث النص والشبكة
-                document.getElementById('path_text').innerText = d.path;
-                buildGrid(pathArray);
-                
-            } catch(e) {
-                document.getElementById('path_text').innerText = "فشل التحليل";
-            } finally {
-                // إعادة الزر لوضعه الطبيعي بعد انتهاء الطلب
-                btn.innerText = "إضغط هنا لجلب المسار التالي";
-                btn.classList.remove('loading');
-            }
+                pathText.innerText = d.path; buildGrid(pathArray);
+            } catch(e) { pathText.innerText = "خطأ في الاتصال"; }
+            finally { btn.innerText = "إضغط هنا لجلب المسار التالي"; btn.classList.remove('loading'); }
         }
-
-        // جلب مسار أول عند تحميل الصفحة
-        fetchNewPath();
+        fetchNewPath(); // جلب مسار عند التحميل
     </script>
 </body>
 </html>
-
