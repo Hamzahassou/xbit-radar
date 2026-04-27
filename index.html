@@ -3,29 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAMZA APPLE RADAR V1</title>
     <style>
-        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; padding-top: 50px; }
-        .radar { width: 240px; height: 240px; border: 4px solid #ff0000; border-radius: 50%; margin: 0 auto; position: relative; box-shadow: 0 0 25px #ff0000; }
-        .beam { position: absolute; width: 50%; height: 4px; background: linear-gradient(to right, transparent, #ff0000); top: 50%; left: 50%; transform-origin: left; animation: spin 2s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .val { font-size: 75px; font-weight: bold; color: #fff; margin: 25px 0; text-shadow: 0 0 15px #ff0000; }
-        .box { border: 1px solid #0f0; color: #0f0; padding: 10px; width: 80%; margin: 0 auto; border-radius: 10px; background: rgba(0,255,0,0.05); }
+        body { background: #002b1a; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding-top: 30px; overflow: hidden; background-image: radial-gradient(circle, #005030 0%, #001a10 100%); }
+        .header { font-size: 14px; color: #ffcc00; letter-spacing: 2px; text-shadow: 0 0 10px #ffcc00; margin-bottom: 20px; }
+        
+        /* تصميم شبكة التفاحات الشبيه باللعبة */
+        .game-grid { display: flex; flex-direction: column-reverse; width: 280px; margin: 0 auto; gap: 8px; }
+        .row { display: flex; gap: 8px; }
+        
+        /* الصناديق الخشبية المغلقة */
+        .box { width: 48px; height: 48px; background: #8b4513; border-radius: 8px; border: 2px solid #5d2e0a; box-shadow: inset 0 0 15px #000; position: relative; transition: all 0.3s; }
+        
+        /* مؤشر المستوى الحالي على اليسار */
+        .level-indicator { width: 40px; color: #0f0; font-size: 12px; font-weight: bold; line-height: 48px; text-align: right; margin-right: 10px; }
+
+        /* التفاحة السليمة (الخيار الآمن) */
+        .box.safe::after { content: '🍎'; font-size: 30px; position: absolute; top: 5px; left: 9px; animation: glow 1s infinite alternate; }
+        .box.safe { background: #00ff00; border-color: #fff; box-shadow: 0 0 20px #0f0; }
+        
+        /* التفاحة الفاسدة (المخاطرة) */
+        .box.risk::after { content: '☠️'; font-size: 25px; position: absolute; top: 10px; left: 11px; opacity: 0.3; }
+        
+        /* المستوى الموصى به للتوقف */
+        .stop-zone { border: 3px solid #ffcc00; box-shadow: 0 0 20px #ffcc00; }
+
+        @keyframes glow { from { transform: scale(1); opacity: 0.8; } to { transform: scale(1.1); opacity: 1; } }
+        
+        .control-panel { margin-top: 30px; font-size: 16px; color: #fff; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 10px; width: 80%; margin-left: auto; margin-right: auto; }
+        .success { color: #0f0; font-weight: bold; font-size: 20px; }
     </style>
 </head>
 <body>
-    <div style="color:#ff0000; font-size:10px; letter-spacing:3px; margin-bottom:15px;">● LOGIC ANALYSIS ACTIVE</div>
-    <div class="radar"><div class="beam"></div></div>
-    <div class="val" id="sig">...</div>
-    <div class="box">🎯 الحالات المضمونة اليوم: <span id="acc">0</span></div>
+    <div class="header">● APPLE PROTOTYPE ACTIVE</div>
     
+    <div class="game-grid">
+        </div>
+
+    <div class="control-panel">
+        <div>المسار الآمن المقترح: <span class="success" id="path">جارِ التحليل...</span></div>
+        <div>🎯 نسبة الأمان المتوقعة: <span class="success">~90% (إلى المستوى 3)</span></div>
+        <div style="font-size: 10px; color: #888; margin-top: 10px;">Hash: Initializing...</div>
+    </div>
+
     <script>
-        async function update() {
-            const r = await fetch('data.json?v=' + Date.now());
-            const d = await r.json();
-            document.getElementById('sig').innerText = d.signal + "x";
-            document.getElementById('acc').innerText = d.accuracy;
+        // دالة لتوليد الشبكة وعرض المسار الآمن
+        function buildGrid(path) {
+            const grid = document.querySelector('.game-grid');
+            grid.innerHTML = ''; // تفريغ الشبكة القديمة
+            
+            // ننشئ 5 مستويات (صفوف)
+            for (let r = 1; r <= 5; r++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row';
+                
+                // تحديد منطقة التوقف الآمن (تحت المستوى 4)
+                if (r < 4) rowDiv.classList.add('stop-zone');
+
+                // مؤشر المستوى
+                const levelDiv = document.createElement('div');
+                levelDiv.className = 'level-indicator';
+                levelDiv.innerText = 'L' + r;
+                rowDiv.appendChild(levelDiv);
+
+                // 5 مربعات (أعمدة) لكل صف
+                for (let c = 1; c <= 5; c++) {
+                    const boxDiv = document.createElement('div');
+                    boxDiv.className = 'box';
+                    
+                    // إذا كان هذا المربع هو المربع "الآمن" المختار من السكربت
+                    if (path && path[r-1] === c) {
+                        boxDiv.classList.add('safe');
+                    } else {
+                        // لإعطاء هيبة تقنية، نضع تفاحات فاسدة مخفية في الأماكن الأخرى
+                        boxDiv.classList.add('risk');
+                    }
+                    rowDiv.appendChild(boxDiv);
+                }
+                grid.appendChild(rowDiv);
+            }
         }
-        setInterval(update, 3000);
+
+        async function update() {
+            try {
+                const r = await fetch('data.json?v=' + Date.now());
+                const d = await r.json();
+                
+                // تحويل النص (مثلاً: "2,3,1") إلى مصفوفة أرقام [2, 3, 1]
+                const pathArray = d.path.split(',').map(Number);
+                
+                document.getElementById('path').innerText = d.path;
+                buildGrid(pathArray); // إعادة بناء الشبكة بالمسار الجديد
+            } catch(e) {}
+        }
+        setInterval(update, 3000); // تحديث الواجهة كل 3 ثوانٍ
+        update(); // تحديث فوري عند التحميل
     </script>
 </body>
 </html>
